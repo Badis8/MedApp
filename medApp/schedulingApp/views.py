@@ -15,8 +15,4 @@ def presentation(request):
     isNormalUserr=request.user.groups.filter(name="Doctor").exists()
     isDoctor=request.user.groups.filter(name="pharmacist").exists()
     isPharmacist=request.user.groups.filter(name="normal").exists()
-    print(isChecker)
-    print(isNormalUserr)
-    print(isDoctor)
-    print(isPharmacist)
     return render(request,"schedulingApp/generalPresentation.html",{"isChecker":isChecker})

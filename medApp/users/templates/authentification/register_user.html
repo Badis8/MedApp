@@ -11,7 +11,22 @@
 
 
 {% endif %}	
-
+<script>
+    function showNormalFields() {
+        document.getElementById("DoctorSpeciltyLabel").style.display = "none";
+        document.getElementById("DoctorSpecilty").style.display = "none";
+        document.getElementById("DoctorAddressLabel").style.display = "none";
+        document.getElementById("DoctorAddress").style.display = "none";
+    }
+    
+    function showDoctorFields() {
+        console.log("here")
+        document.getElementById("DoctorSpeciltyLabel").style.display = "block";
+        document.getElementById("DoctorSpecilty").style.display = "block";
+        document.getElementById("DoctorAddressLabel").style.display = "block";
+        document.getElementById("DoctorAddress").style.display = "block";
+    }
+    </script>
 <br>
 <br>
 	<div class="shadow p-4 mb-5 bg-body rounded">
@@ -22,8 +37,78 @@
 		<form action="{% url 'Register' %}" method=POST>
 			{% csrf_token %}
 
-			{{ form.as_p }}
+ 
 
+
+
+            <div class="mb-3">
+
+
+                
+                <div class="mb-3">
+                    <label for="nameInput" class="form-label">name</label>
+                    <input type="text" class="form-control" id="exampleInputName" aria-describedby="emailHelp" name="username"">
+                <div class="mb-3">
+
+
+                      
+                <div class="mb-3">
+                    <label for="nameInput" class="form-label">Firt Name</label>
+                    <input type="text" class="form-control" id="exampleInputName" aria-describedby="emailHelp" name="firstName"">
+                <div class="mb-3">
+
+                          
+                    <div class="mb-3">
+                        <label for="nameInput" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="exampleInputName" aria-describedby="emailHelp" name="LastName"">
+                    <div class="mb-3">
+
+                        <div class="mb-3">
+                            <label for="nameInput" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="exampleInputName" aria-describedby="emailHelp" name="EmailAddress"">
+                        <div class="mb-3">
+                            
+
+
+                  <label for="exampleInputPassword1" class="form-label">Password</label>
+                  <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+                </div>
+   
+
+
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="Normal"  onclick="showNormalFields()"  checked>
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Register as normal user
+                </label>
+              </div>
+          
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="Doctor"  onclick="showDoctorFields()"   >
+                <label class="form-check-label" for="flexRadioDefault2">
+                  Register as a Doctor
+                </label>
+              </div>
+              <div class="mb-3">
+                <label for="nameInput" class="form-label" id="DoctorSpeciltyLabel" display="none" >Speciality</label>
+                <input type="text" class="form-control" id="DoctorSpecilty" aria-describedby="emailHelp" name="Speciality" >
+            <div class="mb-3">
+
+                <div class="mb-3">
+                    <label for="nameInput" class="form-label" id="DoctorAddressLabel">Address</label>
+                    <input type="text" class="form-control" id="DoctorAddress" aria-describedby="emailHelp" name="Speciality">
+                <div class="mb-3">
+            
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="pharmacist">
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Register as a pharmacist
+                </label>
+              </div>
+          
+ 
+          
   
 
 
@@ -35,4 +120,5 @@
 		
 </div>
 <br/><br/>	
+ 
 {% endblock %}
