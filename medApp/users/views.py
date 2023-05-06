@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate ,login,logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from .forms import RegisterUserForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 from .models import PendingDoctors
 from .models import PendingPharmacists
 from django.contrib.auth.decorators import user_passes_test
@@ -99,6 +99,8 @@ def PendingDoctor(request):
                     user.first_name = doctor.First_name
                     user.last_name = doctor.Last_name
                     user.save()
+                    group = Group.objects.get(name='Doctors')
+                    group.user_set.add(user)
                     doctor= PendingDoctors.objects.get(username=doctor.username)
                     doctor.delete()
                     messages.success(request,"Doctor accepted")
