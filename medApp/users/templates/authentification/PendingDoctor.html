@@ -1,0 +1,28 @@
+{% extends 'schedulingApp/baseLine.html' %}
+
+{% block content %}
+<h3>Doctors:</h3>
+  
+{% for doctor in doctors%}
+<div class="card">
+    <div class="card-header">
+        <strong> {{doctor}}</strong>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">  Doctor {{doctor.Last_name}} </h5>
+      <p class="card-text"><ul>
+        <li> First name: {{doctor.First_name}}</li>
+        <li> Last name: {{doctor.Last_name}}</li>
+        <li> Email Address: {{doctor.Email}}</li>
+        <li> speciality: {{doctor.Specialty}}</li>
+        <li>phone number: {{doctor.phoneNumber}}</li>
+        </ul></p>
+      <a href="#" class="btn btn-primary">Accept</a>
+      <a href="#" class="btn btn-primary">Deny</a>
+    </div>
+  </div> 
+<br>
+{% endfor %}
+ 
+
+{% endblock %}

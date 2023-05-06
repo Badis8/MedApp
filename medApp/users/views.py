@@ -79,6 +79,8 @@ def registerRequestForm(request):
 
     return render(request, 'authentification/register_user.html', {
       
-    })
- 
- 
+    }) 
+def PendingDoctor(request):
+     waitingDoctors=PendingDoctors.objects.all()
+     isChecker=request.user.groups.filter(name="Checkers").exists()
+     return render(request,'authentification/pendingDoctor.html',{'doctors':waitingDoctors,'isChecker':isChecker})

@@ -13,7 +13,11 @@
           </li>
           {% if isChecker   %}
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">checker Stuff</a>
+            <a class="nav-link active" aria-current="page" href="{% url 'PendingDoctor' %}">Pending Doctors</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">Pending Pharmacists</a>
           </li>
           {% endif %}
           {% else %}
@@ -22,9 +26,10 @@
           </li>
           {% endif %}
           <li class="nav-item">
+            {% if not user.is_authenticated %}
             <a class="nav-link active" aria-current="page" href="{% url 'Register' %}">Register</a>
           </li>
-          
+          {% endif %}
           
         </ul>
         <form class="d-flex" role="search">

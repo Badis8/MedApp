@@ -12,6 +12,7 @@ def home(request,year,month):
     return render(request,"schedulingApp/home.html",{'year':year,'month':month,'cal':cal})
 def presentation(request):
     isChecker=request.user.groups.filter(name="Checkers").exists()
+    print(isChecker)
     isNormalUserr=request.user.groups.filter(name="Doctor").exists()
     isDoctor=request.user.groups.filter(name="pharmacist").exists()
     isPharmacist=request.user.groups.filter(name="normal").exists()
