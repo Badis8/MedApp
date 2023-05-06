@@ -1,11 +1,11 @@
 {% extends 'schedulingApp/baseLine.html' %}  
 {% block content %}
 {% if user.is_authenticated %}
-{% if user.groups.filter(name='ProfesionalCheckers').exists %}
- <center> <h1>welcome admin {{ user.username }}</h1> </center>
- {% else %}
- not admin ut welcome 
+<h1>Welcome {{user}} </h1> 
+{% if isChecker   %}
+i have detected u a checker
  {% endif %}
+ 
  {% endif %}
     fancy page talks general idea of  medd app  ddd
  

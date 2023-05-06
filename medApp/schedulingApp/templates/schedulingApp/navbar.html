@@ -11,6 +11,11 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">Logout</a>
           </li>
+          {% if isChecker   %}
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">checker Stuff</a>
+          </li>
+          {% endif %}
           {% else %}
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Login</a>
