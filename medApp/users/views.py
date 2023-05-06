@@ -51,9 +51,9 @@ def registerRequestForm(request):
                 new_user.last_name = last
                 new_user.save()
             if(typeSelected=="Doctor"):
-                phoneNumber= last=request.POST.get('PhoneNumber')    
-                address= last=request.POST.get('DoctorAddress')  
-                specialite=last=request.POST.get('Speciality') 
+                phoneNumber=request.POST.get('PhoneNumber')    
+                address =request.POST.get('DoctorAddress')  
+                specialite =request.POST.get('Speciality') 
                 PendingDoctor=PendingDoctors()
                 PendingDoctor.username=username
                 PendingDoctor.First_name=first
@@ -67,8 +67,8 @@ def registerRequestForm(request):
                 messages.success(request,"pending doctor success")
             if(typeSelected=="pharmacist"):
                  
-                phoneNumber= last=request.POST.get('PharmacistAddress')  
-                address= last=request.POST.get('PhoneNumberPharmacist')  
+                phoneNumber =request.POST.get('PharmacistAddress')  
+                address=  request.POST.get('PhoneNumberPharmacist')  
                 PendingPharmacist=PendingPharmacists()
                 PendingPharmacist.username=username
                 PendingPharmacist.First_name=first
@@ -95,12 +95,33 @@ def PendingDoctor(request):
             doctor_id=request.POST.get('doctor_id_Accepted')
             for doctor in waitingDoctors:
                 if(doctor.username==doctor_id):
-                    print("salut")
-                    print(doctor.password)
+                    user = User.objects.create_user(username=doctor.username, password=doctor.password,email=doctor.Email)
+                    user.first_name = doctor.First_name
+                    user.last_name = doctor.Last_name
+                    user.save()
+                    doctor= PendingDoctors.objects.get(username=doctor.username)
+                    doctor.delete()
+                    messages.success(request,"Doctor accepted")
+                    waitingDoctors=PendingDoctors.objects.all()
+                    isChecker=request.user.groups.filter(name="Checkers").exists()
+                    return render(request,'authentification/pendingDoctor.html',{'doctors':waitingDoctors,'isChecker':isChecker})
     
            
         elif request.POST['action'] == 'Deny':
             doctor_id=request.POST.get('doctor_id_Denied')
+            waitingDoctors=PendingDoctors.objects.all()
+            for doctor in waitingDoctors:
+                if(doctor.username==doctor_id):   
+                    doctor= PendingDoctors.objects.get(username=doctor.username)
+                    doctor.delete()
+                    messages.success(request,"Doctor rejected")
+                    waitingDoctors=PendingDoctors.objects.all()
+                    isChecker=request.user.groups.filter(name="Checkers").exists()
+                    return render(request,'authentification/pendingDoctor.html',{'doctors':waitingDoctors,'isChecker':isChecker})
+
+
+
+ 
             print(doctor_id)
 
     waitingDoctors=PendingDoctors.objects.all()
