@@ -4,9 +4,10 @@ class PendingDoctors(models.Model):
     First_name=models.CharField("First_name",max_length=50)
     Last_name=models.CharField("Last_name",max_length=50)
     Email=models.EmailField("email")
-    Specialty=models.CharField("Last_name",max_length=50)
+    Specialty=models.CharField("Specialty",max_length=50)
     address=models.CharField("address",max_length=50)
     phoneNumber=models.CharField("phone number",max_length=8)
+    password=models.CharField("password",max_length=100)
     def __str__(self):
         return self.username
 
@@ -17,6 +18,7 @@ class PendingPharmacists(models.Model):
     Email=models.EmailField("email")
     address=models.CharField("address",max_length=50)
     phoneNumber=models.CharField("phone number",max_length=8)
+    password=models.CharField("password",max_length=100)
     def __str__(self):
         return self.username
 

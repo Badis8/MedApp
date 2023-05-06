@@ -6,7 +6,10 @@ from .forms import RegisterUserForm
 from django.contrib.auth.models import User
 from .models import PendingDoctors
 from .models import PendingPharmacists
-
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
+def is_in_group_Checker(user):
+    return user.groups.filter(name='Checkers').exists()
 def login_user(request):
     if request.method=="POST":
         userName=request.POST["username"]
@@ -48,8 +51,8 @@ def registerRequestForm(request):
                 new_user.last_name = last
                 new_user.save()
             if(typeSelected=="Doctor"):
-                phoneNumber= last=request.POST.get('DoctorAddress')  
-                address= last=request.POST.get('PhoneNumber')  
+                phoneNumber= last=request.POST.get('PhoneNumber')    
+                address= last=request.POST.get('DoctorAddress')  
                 specialite=last=request.POST.get('Speciality') 
                 PendingDoctor=PendingDoctors()
                 PendingDoctor.username=username
@@ -59,6 +62,7 @@ def registerRequestForm(request):
                 PendingDoctor.phoneNumber=phoneNumber
                 PendingDoctor.Specialty=specialite
                 PendingDoctor.address=address
+                PendingDoctor.password=password
                 PendingDoctor.save()
                 messages.success(request,"pending doctor success")
             if(typeSelected=="pharmacist"):
@@ -72,6 +76,7 @@ def registerRequestForm(request):
                 PendingPharmacist.Email=email
                 PendingPharmacist.phoneNumber=phoneNumber
                 PendingPharmacist.address=address
+                PendingPharmacist.password=password
                 PendingPharmacist.save()
                 messages.success(request,"pending pharmacist success")
                  
@@ -79,8 +84,26 @@ def registerRequestForm(request):
 
     return render(request, 'authentification/register_user.html', {
       
-    }) 
+    })  
+@login_required(login_url='login')
+@user_passes_test(is_in_group_Checker)
 def PendingDoctor(request):
-     waitingDoctors=PendingDoctors.objects.all()
-     isChecker=request.user.groups.filter(name="Checkers").exists()
-     return render(request,'authentification/pendingDoctor.html',{'doctors':waitingDoctors,'isChecker':isChecker})
+    if request.method == "POST":
+        if request.POST['action'] == 'accept':
+            waitingDoctors=PendingDoctors.objects.all()
+            
+            doctor_id=request.POST.get('doctor_id_Accepted')
+            for doctor in waitingDoctors:
+                if(doctor.username==doctor_id):
+                    print("salut")
+                    print(doctor.password)
+    
+           
+        elif request.POST['action'] == 'Deny':
+            doctor_id=request.POST.get('doctor_id_Denied')
+            print(doctor_id)
+
+    waitingDoctors=PendingDoctors.objects.all()
+    isChecker=request.user.groups.filter(name="Checkers").exists()
+    return render(request,'authentification/pendingDoctor.html',{'doctors':waitingDoctors,'isChecker':isChecker})
+ 
