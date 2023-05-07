@@ -6,6 +6,8 @@ from .forms import RegisterUserForm
 from django.contrib.auth.models import User,Group
 from .models import PendingDoctors
 from .models import PendingPharmacists
+from .models import actualDoctors
+from .models import actualPharmacist
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
 def is_in_group_Checker(user):
@@ -105,6 +107,12 @@ def PendingDoctor(request):
                     group = Group.objects.get(name='Doctors')
                     group.user_set.add(user)
                     doctor= PendingDoctors.objects.get(username=doctor.username)
+                    actualDoc=actualDoctors()
+                    actualDoc.address=doctor.address
+                    actualDoc.phoneNumber=doctor.phoneNumber
+                    actualDoc.username=user
+                    actualDoc.Specialty=doctor.Specialty
+                    actualDoc.save()
                     doctor.delete()
                     messages.success(request,"Doctor accepted")
                     waitingDoctors=PendingDoctors.objects.all()
@@ -144,6 +152,11 @@ def PendingPharmacist(request):
                     group = Group.objects.get(name='Pharmacists')
                     group.user_set.add(user)
                     pharma= PendingPharmacists.objects.get(username=pharmacist.username)
+                    pharmacistActual=actualDoctors()
+                    pharmacistActual.address=pharmacist.address
+                    pharmacistActual.phoneNumber=pharmacist.phoneNumber
+                    pharmacistActual.username=user
+                    pharmacistActual.save()
                     pharma.delete()
                     messages.success(request,"pharmacist accepted")
                     waitingPharmacists=PendingPharmacists.objects.all()
