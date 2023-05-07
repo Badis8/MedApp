@@ -28,6 +28,16 @@
 
            
           {% endif %}
+
+          {% if isNormalUser  %}
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'viewOrdonnance' %}">Visualise Ordonnances</a>  
+          </li>
+
+           
+          {% endif %}
+
+
           {% else %}
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Login</a>

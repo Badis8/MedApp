@@ -1,0 +1,24 @@
+{% extends 'schedulingApp/baseLine.html' %}  
+{% block content %}
+<h1>Visualise Ordonnance</h1>
+{% csrf_token %}
+{% for Ordonnance in Ordonnances %}
+<div class="card">
+    <div class="card-header">
+        <strong>Written by: Doctor {{Ordonnance.Doctor.username}}</strong>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title"> Ordonnance </h5>
+      <p class="card-text"><ul>
+        {% for ligne in Ordonnance.ligne.all %}
+        <li> Medication name : {{ligne.Medicament.name}}</li>
+        <li> weight: {{ligne.Medicament.weight}} </li>
+        <li>quantity: {{ligne.quantity}} </li>
+        <hr>
+        {% endfor %}
+        </ul></p>
+    </div>
+</div>
+<br>
+{% endfor %}
+{% endblock %}
