@@ -24,15 +24,17 @@ class PendingPharmacists(models.Model):
         return self.username
 
 class actualDoctors(models.Model):
-    username=models.ForeignKey(User,max_length=50,on_delete=models.CASCADE,related_name="doctors")
+    username=models.ForeignKey(User,on_delete=models.CASCADE,related_name="doctors")
     Specialty=models.CharField("Specialty",max_length=50)
     address=models.CharField("address",max_length=50)
     phoneNumber=models.CharField("phone number",max_length=8)
     def __str__(self):
         return self.username.username
 class actualPharmacist(models.Model):
-    username=models.ForeignKey(User,max_length=50,on_delete=models.CASCADE,related_name="pharmacists")
+    username=models.ForeignKey(User,on_delete=models.CASCADE,related_name="pharmacists")
     address=models.CharField("address",max_length=50)
     phoneNumber=models.CharField("phone number",max_length=8)
+    def __str__(self):
+        return self.username.username
 
 # Create your models here.

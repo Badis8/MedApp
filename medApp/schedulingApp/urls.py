@@ -6,4 +6,6 @@ urlpatterns = [
    
     path('',views.presentation,name="home"),
     path('presentation',views.presentation,name="generalPresentation"),
+    path('PrepareOrdonnance',views.prepareOrdonnance,name="PrepareOrdonnance"),
+    
 ]

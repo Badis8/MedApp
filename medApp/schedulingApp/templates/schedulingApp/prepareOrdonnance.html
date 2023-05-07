@@ -1,0 +1,85 @@
+{% extends 'schedulingApp/baseLine.html' %}  
+{% block content %}
+<h1>Prepare Ordonnance</h1>
+ 
+<form id="formOrodnnance"  >
+    {% csrf_token %}
+  
+    <div class="mb-3">
+        <label for="medicInput" class="form-label">name of the medic : </label>
+        <input type="text" class="form-control" id="medicInput" aria-describedby="emailHelp" name="nameMedic">
+      </div>
+    
+    <div class="mb-3">
+      <label for="quantity" class="form-label">quantity :</label>
+      <input type="number" class="form-control" id="quantity" name="quantity">
+    </div>
+    
+    <div class="mb-3">
+        <label for="weight" class="form-label">weight : </label>
+        <input type="number" class="form-control" id="weight" name="weight">
+      </div>
+    
+  
+    <input type="submit" value="Add medic" class="btn btn-secondary" onclick="addInput(document.getElementById('medicInput').value,document.getElementById('quantity').value,document.getElementById('weight').value)">
+</form>
+<br> 
+ 
+    <form id="ordonnancesFinal" method="POST" action="{% url 'PrepareOrdonnance' %}">
+        {% csrf_token %}
+
+        
+    <div class="mb-3">
+        <label for="patientname" class="form-label">name of patient : </label>
+        <input type="text" class="form-control" id="patientname" aria-describedby="emailHelp" name="patientname">
+      </div>
+    
+        <input type="hidden" name="medicines" id="medicines" value="" />
+        <input type="submit" value="Submit Ordonnance" class="btn btn-secondary"><br>
+        <br> 
+ 
+	</form>
+
+    <script>
+        function addInput(value,quantity,weight) {
+            event.preventDefault();       
+            var input = document.createElement("input");
+            input.type = "text";
+            input.name = "medicName[]";
+            input.value=value
+            input.readOnly = true; 
+
+            var inputWeight = document.createElement("input");
+            inputWeight.type = "text";
+            inputWeight.name = "medicWeight[]";
+            inputWeight.value=weight
+            inputWeight.readOnly = true; 
+
+            var inputQuantity = document.createElement("input");
+            inputQuantity.type = "text";
+            inputQuantity.name = "medicQuantity[]";
+            inputQuantity.value=quantity
+            inputQuantity.readOnly = true; 
+
+            document.getElementById("ordonnancesFinal").appendChild(input);
+            document.getElementById("ordonnancesFinal").appendChild(inputWeight);
+            document.getElementById("ordonnancesFinal").appendChild(inputQuantity);
+            var br = document.createElement("br");
+            document.getElementById("ordonnancesFinal").appendChild(br);
+
+            var medicines = document.getElementById("medicines").value;
+            var newMedicine = {
+                name: value,
+                weight: weight,
+                quantity: quantity
+            };
+            var medicinesArray = medicines ? JSON.parse(medicines) : [];
+            medicinesArray.push(newMedicine);
+            document.getElementById("medicines").value = JSON.stringify(medicinesArray);
+             
+
+        }
+   
+    </script>
+
+{% endblock %}

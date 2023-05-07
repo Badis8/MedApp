@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate ,login,logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from calendar import HTMLCalendar 
+import json
+
 def home(request,year,month):
     month=month.capitalize()
     monthNumber=list(calendar.month_name).index(month)
@@ -17,5 +19,13 @@ def presentation(request):
     isPharmacist=request.user.groups.filter(name="Pharmacists").exists()
     return render(request,"schedulingApp/generalPresentation.html",{"isChecker":isChecker,"isDoctor":isDoctor})
 def prepareOrdonnance(request):
+    
+    if request.method == 'POST':
+        medicines = request.POST.get('medicines')
+        if medicines:
+            medicines_list = json.loads(medicines)
+            for medicine in medicines_list:
+                print(medicine['name'], medicine['quantity'], medicine['weight'])
     isDoctor=request.user.groups.filter(name="Doctors").exists()
+     
     return render(request,"schedulingApp/prepareOrdonnance.html",{"isDoctor":isDoctor})

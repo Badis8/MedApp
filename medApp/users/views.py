@@ -73,8 +73,8 @@ def registerRequestForm(request):
                 messages.success(request,"pending doctor success")
             if(typeSelected=="pharmacist"):
                  
-                phoneNumber =request.POST.get('PharmacistAddress')  
-                address=  request.POST.get('PhoneNumberPharmacist')  
+                phoneNumber =request.POST.get('PhoneNumberPharmacist')    
+                address=  request.POST.get('PharmacistAddress')    
                 PendingPharmacist=PendingPharmacists()
                 PendingPharmacist.username=username
                 PendingPharmacist.First_name=first
@@ -152,7 +152,7 @@ def PendingPharmacist(request):
                     group = Group.objects.get(name='Pharmacists')
                     group.user_set.add(user)
                     pharma= PendingPharmacists.objects.get(username=pharmacist.username)
-                    pharmacistActual=actualDoctors()
+                    pharmacistActual=actualPharmacist()
                     pharmacistActual.address=pharmacist.address
                     pharmacistActual.phoneNumber=pharmacist.phoneNumber
                     pharmacistActual.username=user
@@ -172,7 +172,7 @@ def PendingPharmacist(request):
                     pharma= PendingPharmacists.objects.get(username=pharmacist.username)
                     pharma.delete()
                     messages.success(request,"Pharmacist rejected")
-                    waitingPharmacists=PendingDoctors.objects.all()
+                    waitingPharmacists=PendingPharmacists.objects.all()
                     isChecker=request.user.groups.filter(name="Checkers").exists()
                     return render(request,'authentification/pendingPharmacists.html',{'Pharmacists':waitingPharmacists,'isChecker':isChecker})
 
