@@ -6,4 +6,5 @@ urlpatterns = [
     path('logout_user',views.logout_user,name="logout"),
     path('register_user',views.registerRequestForm,name="Register"),
     path('PendingDoctors',views.PendingDoctor,name="PendingDoctor"),
+    path('PendingPharmacists',views.PendingPharmacist,name="PendingPharmacist"),
 ]

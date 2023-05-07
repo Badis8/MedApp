@@ -50,6 +50,10 @@ def registerRequestForm(request):
                 new_user.first_name = first
                 new_user.last_name = last
                 new_user.save()
+                messages.success(request,'Registration successfull you may connect')
+                return render(request, 'authentification/register_user.html', { 
+      
+                })
             if(typeSelected=="Doctor"):
                 phoneNumber=request.POST.get('PhoneNumber')    
                 address =request.POST.get('DoctorAddress')  
@@ -79,8 +83,7 @@ def registerRequestForm(request):
                 PendingPharmacist.password=password
                 PendingPharmacist.save()
                 messages.success(request,"pending pharmacist success")
-                 
-
+                
 
     return render(request, 'authentification/register_user.html', {
       
@@ -122,11 +125,45 @@ def PendingDoctor(request):
                     return render(request,'authentification/pendingDoctor.html',{'doctors':waitingDoctors,'isChecker':isChecker})
 
 
-
- 
-            print(doctor_id)
-
     waitingDoctors=PendingDoctors.objects.all()
     isChecker=request.user.groups.filter(name="Checkers").exists()
     return render(request,'authentification/pendingDoctor.html',{'doctors':waitingDoctors,'isChecker':isChecker})
  
+def PendingPharmacist(request):
+    if request.method == "POST":
+        if request.POST['action'] == 'accept':
+            waitingPharmacists=PendingPharmacists.objects.all()
+            
+            pharmacist_id=request.POST.get('Pharmacist_id_Accepted')
+            for pharmacist in waitingPharmacists:
+                if(pharmacist.username==pharmacist_id):
+                    user = User.objects.create_user(username=pharmacist.username, password=pharmacist.password,email=pharmacist.Email)
+                    user.first_name = pharmacist.First_name
+                    user.last_name = pharmacist.Last_name
+                    user.save()
+                    group = Group.objects.get(name='Pharmacists')
+                    group.user_set.add(user)
+                    pharma= PendingPharmacists.objects.get(username=pharmacist.username)
+                    pharma.delete()
+                    messages.success(request,"pharmacist accepted")
+                    waitingPharmacists=PendingPharmacists.objects.all()
+                    isChecker=request.user.groups.filter(name="Checkers").exists()
+                    return render(request,'authentification/pendingPharmacists.html',{'Pharmacists':waitingPharmacists,'isChecker':isChecker})
+    
+           
+        elif request.POST['action'] == 'Deny':
+            pharmacist_id=request.POST.get('Pharmacist_id_Denied')
+            waitingPharmacists=PendingPharmacists.objects.all()
+            for pharmacist in waitingPharmacists:
+                if(pharmacist.username==pharmacist_id):   
+                    pharma= PendingPharmacists.objects.get(username=pharmacist.username)
+                    pharma.delete()
+                    messages.success(request,"Pharmacist rejected")
+                    waitingPharmacists=PendingDoctors.objects.all()
+                    isChecker=request.user.groups.filter(name="Checkers").exists()
+                    return render(request,'authentification/pendingPharmacists.html',{'Pharmacists':waitingPharmacists,'isChecker':isChecker})
+
+
+    waitingPharmacists=PendingPharmacists.objects.all()
+    isChecker=request.user.groups.filter(name="Checkers").exists()
+    return render(request,'authentification/pendingPharmacists.html',{'Pharmacists':waitingPharmacists,'isChecker':isChecker})
