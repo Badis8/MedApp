@@ -51,6 +51,8 @@ def registerRequestForm(request):
                 new_user = User.objects.create_user(username=username, password=password,email=email)
                 new_user.first_name = first
                 new_user.last_name = last
+                group = Group.objects.get(name='normalUsers')
+                group.user_set.add(new_user)
                 new_user.save()
                 messages.success(request,'Registration successfull you may connect')
                 return render(request, 'authentification/register_user.html', { 
@@ -98,8 +100,10 @@ def PendingDoctor(request):
             waitingDoctors=PendingDoctors.objects.all()
             
             doctor_id=request.POST.get('doctor_id_Accepted')
+           
             for doctor in waitingDoctors:
                 if(doctor.username==doctor_id):
+                    print(doctor.username)
                     user = User.objects.create_user(username=doctor.username, password=doctor.password,email=doctor.Email)
                     user.first_name = doctor.First_name
                     user.last_name = doctor.Last_name

@@ -8,5 +8,9 @@ urlpatterns = [
     path('presentation',views.presentation,name="generalPresentation"),
     path('PrepareOrdonnance',views.prepareOrdonnance,name="PrepareOrdonnance"),
     path('viewOrdonnance',views.visualiseOrdonnance,name="viewOrdonnance"),
+    path('viewOrdonnancePending',views.visualiseWaitingOrdonnance,name="viewOrdonnancePending"),
+    path('viewOrdonnancePendingInPharmacist',views.visualisePendingPharmacistOrdonnance,name="viewOrdonnancePendingInPharmacist"),
+    path('acceptedOrdonnances',views.visualiseAcceptedOronnance,name="acceptedOrdonnances"),
+ 
     
 ]
