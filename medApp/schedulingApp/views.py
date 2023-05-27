@@ -11,9 +11,10 @@ from django.contrib.auth.models import User
 from .models import Ordonnance
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
-from .models import UserPendingOrdoannance,PharmacistPendingOrdoannance
+from .models import UserPendingOrdoannance,PharmacistPendingOrdoannance,Medicament
 from django.shortcuts import redirect
 from django.http import JsonResponse
+import pandas as pd
 
 def home(request,year,month):
     month=month.capitalize()
@@ -32,7 +33,6 @@ def is_in_group_Doctors(user):
 @login_required(login_url='login')
 @user_passes_test(is_in_group_Doctors)
 def prepareOrdonnance(request):
-    
     if request.method == 'POST':
         medicines = request.POST.get('medicines')
         if medicines:
@@ -41,11 +41,11 @@ def prepareOrdonnance(request):
             username=request.POST.get('patientname')
              
             user = User.objects.filter(username=username).first()
+ 
             if(user==None):
                  messages.success(request,'no username '+username+' is present in our database')
                  isDoctor=request.user.groups.filter(name="Doctors").exists()
                  return render(request,"schedulingApp/prepareOrdonnance.html",{"isDoctor":isDoctor})
-             
             medicines_list = json.loads(medicines)
             newOrodonnance.usernameDestination=user
             newOrodonnance.Doctor=request.user
@@ -53,23 +53,23 @@ def prepareOrdonnance(request):
             newOrodonnance.decision="neutre"
             newOrodonnance.save()
             for medicine in medicines_list:
-                medicines = Medicament.objects.filter(name=medicine['name'], weight=medicine['weight'])
+                medicines = Medicament.objects.filter(name=medicine['name'])
                 if medicines.exists():
-                    medicines = Medicament.objects.filter(name=medicine['name'], weight=medicine['weight']).first()
+                    medicines = Medicament.objects.filter(name=medicine['name']).first()
                 else:
-                    medicines=Medicament(name=medicine['name'], weight=medicine['weight'])
-                    medicines.save()
-                    print("here")
-                    print("here this is the type "+medicines.name)
+                    messages.success(request,'ordannance sent unsuccessfuly: medecine named: '+medicine['name']+"does not exist")
+                    isDoctor=request.user.groups.filter(name="Doctors").exists()
+                    return render(request,"schedulingApp/prepareOrdonnance.html",{"isDoctor":isDoctor})
+                
                 ligneToAdd=LigneOrdonnance(quantity=medicine['quantity'],Medicament=medicines,Ordonnance=newOrodonnance)
                 ligneToAdd.save()
-                messages.success(request,'ligne ordannance sent successful')
+                 
             messages.success(request,'ordannance sent successful')
              
 
     isDoctor=request.user.groups.filter(name="Doctors").exists()
-     
-    return render(request,"schedulingApp/prepareOrdonnance.html",{"isDoctor":isDoctor})
+    meds=Medicament.objects.all
+    return render(request,"schedulingApp/prepareOrdonnance.html",{"isDoctor":isDoctor,"meds":meds} )
 def is_in_group_NormalUser(user):
     return user.groups.filter(name='normalUsers').exists()
 @login_required(login_url='login')
@@ -146,3 +146,4 @@ def visualiseAcceptedOronnance(request):
     user = User.objects.get(username=request.user.username)
     ordonnances = Ordonnance.objects.filter(usernameDestination=user,decision="Accepted")
     return render(request,"schedulingApp/accepted.html",{"isNormalUser":isNormalUser,"Ordonnances":ordonnances})
+    

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-s89atyfz+brvpf1s^!op!6^q%*g86v^wiu9tf5tplr=#r5c$h9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.135','127.0.0.1','192.168.1.30','10.110.0.253','10.110.0.253','10.110.73.171','10.110.73.171']
+ALLOWED_HOSTS = ['192.168.1.135','127.0.0.1','192.168.1.30','10.110.0.253','10.110.0.253','10.110.73.171','10.110.73.171','10.110.19.50']
 
 
 # Application definition
@@ -39,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'schedulingApp',
     'users',
+  
+   
 ]
 
 MIDDLEWARE = [
@@ -64,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
             ],
         },
     },

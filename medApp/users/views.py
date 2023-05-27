@@ -103,7 +103,7 @@ def PendingDoctor(request):
            
             for doctor in waitingDoctors:
                 if(doctor.username==doctor_id):
-                    print(doctor.username)
+     
                     user = User.objects.create_user(username=doctor.username, password=doctor.password,email=doctor.Email)
                     user.first_name = doctor.First_name
                     user.last_name = doctor.Last_name

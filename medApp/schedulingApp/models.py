@@ -1,9 +1,10 @@
 from django.db import models
 from  django.contrib.auth.models import User
 class Medicament(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.CharField(primary_key=True,max_length=1000)
     name = models.CharField(max_length=255)
-    weight = models.DecimalField(max_digits=10, decimal_places=2)
+    prixPublic=models.FloatField()
+    list=models.CharField(max_length=1)
     def __str__(self):
         return str(self.id)
     

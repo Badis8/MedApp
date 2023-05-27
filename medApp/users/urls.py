@@ -7,5 +7,5 @@ urlpatterns = [
     path('register_user',views.registerRequestForm,name="Register"),
     path('PendingDoctors',views.PendingDoctor,name="PendingDoctor"),
     path('PendingPharmacists',views.PendingPharmacist,name="PendingPharmacist"),
-     
+    
 ]
