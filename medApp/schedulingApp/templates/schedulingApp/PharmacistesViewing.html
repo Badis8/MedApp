@@ -11,8 +11,9 @@
     <p class="card-text"><ul>
       {% for ligne in OrdonnancePending.Ordonnance.ligne.all %}
         <li> Medication name : {{ligne.Medicament.name}}</li>
-        <li> weight: {{ligne.Medicament.weight}} </li>
         <li>quantity: {{ligne.quantity}} </li>
+        <li>quantity per day: {{ligne.qauntityPerDay}} </li>
+        <li>remarks: {{ligne.remarks}} </li>
         </ul></p>
         {% endfor %}
         <form action="{% url 'viewOrdonnancePendingInPharmacist' %}" method="POST">

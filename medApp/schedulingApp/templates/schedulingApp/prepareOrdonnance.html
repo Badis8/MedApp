@@ -21,9 +21,18 @@
     </div>
     
   
+    <div class="mb-3">
+      <label for="quantityPerDay" class="form-label">quantity per day :</label>
+      <input type="number" class="form-control" id="quantityPerDay" name="quantityPerDay">
+    </div>
     
-  
-    <input type="submit" value="Add medic" class="btn btn-secondary" onclick="addInput(document.getElementById('medicInput').value,document.getElementById('quantity').value)">
+    
+    <div class="mb-3">
+      <label for="Remarks" class="form-label">special remarks:</label>
+      <input type="text" class="form-control" id="Remarks" name="Remarks">
+    </div>
+    
+    <input type="submit" value="Add medic" class="btn btn-secondary" onclick="addInput(document.getElementById('medicInput').value,document.getElementById('quantity').value,document.getElementById('quantityPerDay').value,document.getElementById('Remarks').value)">
 </form>
 <br> 
  
@@ -43,7 +52,7 @@
 	</form>
 
     <script>
-        function addInput(value,quantity) {
+        function addInput(value,quantity,quantityPerDay,Remarks) {
             event.preventDefault();       
             var input = document.createElement("input");
             input.type = "text";
@@ -58,21 +67,41 @@
             inputQuantity.value=quantity
             inputQuantity.readOnly = true; 
 
+
+
+            var inputQuantityPerDay = document.createElement("input");
+            inputQuantityPerDay.type = "text";
+            inputQuantityPerDay.name = "medicQuantityPerDay[]";
+            inputQuantityPerDay.value=quantityPerDay
+            inputQuantityPerDay.readOnly = true; 
+
+
+            
+            var remarks = document.createElement("input");
+            remarks.type = "text";
+            remarks.name = "Remarks[]";
+            remarks.value=Remarks
+            remarks.readOnly = true; 
+
             document.getElementById("ordonnancesFinal").appendChild(input); 
             document.getElementById("ordonnancesFinal").appendChild(inputQuantity);
+            document.getElementById("ordonnancesFinal").appendChild(inputQuantityPerDay); 
+            document.getElementById("ordonnancesFinal").appendChild(remarks);
             var br = document.createElement("br");
             document.getElementById("ordonnancesFinal").appendChild(br);
 
             var medicines = document.getElementById("medicines").value;
             var newMedicine = {
                 name: value,
-                quantity: quantity
+                quantity: quantity,
+                quantityPerDay:quantityPerDay,
+                Remarks:Remarks
             };
             var medicinesArray = medicines ? JSON.parse(medicines) : [];
             medicinesArray.push(newMedicine);
             document.getElementById("medicines").value = JSON.stringify(medicinesArray);
-            console.log(medicinesArray)
-            console.log("hi")
+           
+         
 
         }
    

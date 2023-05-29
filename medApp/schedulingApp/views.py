@@ -15,6 +15,38 @@ from .models import UserPendingOrdoannance,PharmacistPendingOrdoannance,Medicame
 from django.shortcuts import redirect
 from django.http import JsonResponse
 import pandas as pd
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+import mimetypes
+from django.http import FileResponse
+from django.http.response import HttpResponse
+
+def generate_patient_report(patient_info, medication_list,uniqueId):
+    toDwonloadPath="doctorsPrescriptions/newPrescriptionPDF"+uniqueId+".pdf"
+    pdf = canvas.Canvas(toDwonloadPath,pagesize=letter)
+    pdf.setFont("Helvetica", 12)
+    left_margin = 50
+    line_spacing = 20
+    y_position = 700
+
+    pdf.drawString(left_margin, y_position, "Patient Name: " + patient_info["name"])
+    y_position -= line_spacing
+    pdf.drawString(left_margin, y_position, "Patient Last Name: " + patient_info["last_name"])
+    y_position -= 2 * line_spacing
+    pdf.drawString(left_margin, y_position, "Medication Details:")
+    y_position -= line_spacing
+    for medication in medication_list:
+        pdf.drawString(left_margin + 20, y_position, "Name: " + medication["name"])
+        pdf.drawString(left_margin + 20, y_position - line_spacing, "Quantity: " + str(medication["quantity"]))
+        pdf.drawString(left_margin + 20, y_position - 2 * line_spacing, "Quantity per day: " + medication["quantityPerDay"])
+        pdf.drawString(left_margin + 20, y_position - 3 * line_spacing, "Remarks: " + medication["remarks"])
+        y_position -= 4 * line_spacing
+        pdf.line(left_margin, y_position + 5, left_margin + 400, y_position + 5)
+        y_position -= line_spacing
+    pdf.drawString(left_margin + 20, y_position - 2 * line_spacing, "Date: " + medication["date"])
+    pdf.save()
+
+
 
 def home(request,year,month):
     month=month.capitalize()
@@ -61,7 +93,7 @@ def prepareOrdonnance(request):
                     isDoctor=request.user.groups.filter(name="Doctors").exists()
                     return render(request,"schedulingApp/prepareOrdonnance.html",{"isDoctor":isDoctor})
                 
-                ligneToAdd=LigneOrdonnance(quantity=medicine['quantity'],Medicament=medicines,Ordonnance=newOrodonnance)
+                ligneToAdd=LigneOrdonnance(quantity=medicine['quantity'],Medicament=medicines,Ordonnance=newOrodonnance,remarks=medicine['Remarks'],qauntityPerDay=medicine['quantityPerDay'])
                 ligneToAdd.save()
                  
             messages.success(request,'ordannance sent successful')
@@ -146,4 +178,26 @@ def visualiseAcceptedOronnance(request):
     user = User.objects.get(username=request.user.username)
     ordonnances = Ordonnance.objects.filter(usernameDestination=user,decision="Accepted")
     return render(request,"schedulingApp/accepted.html",{"isNormalUser":isNormalUser,"Ordonnances":ordonnances})
-    
+def visualiseHistory(request):
+    isDoctor=request.user.groups.filter(name="Doctors").exists()
+    ordonnances=Ordonnance.objects.filter(Doctor=request.user)      
+    return render(request,"schedulingApp/viewHistory.html",{"isDoctor":isDoctor,"Ordonnances":ordonnances})
+def downlaoad(request,param):
+    medication_list=[]
+ 
+    isDoctor=request.user.groups.filter(name="Doctors").exists()
+    ordonnances=Ordonnance.objects.filter(id=int(param)) 
+    dateOfOrdonnace=ordonnances.first().date
+    patient_info={"name":ordonnances.first().usernameDestination.first_name,"last_name":ordonnances.first().usernameDestination.last_name}
+    for ligne in ordonnances.first().ligne.all():
+        uniqueMedicationInstance={"name":ligne.Medicament.name,"quantity":int(ligne.quantity),"date":str(dateOfOrdonnace.year)+"-"+str(dateOfOrdonnace.month)+"-"+str(dateOfOrdonnace.day),"quantityPerDay":str(ligne.qauntityPerDay),"remarks":ligne.remarks}
+        medication_list.append(uniqueMedicationInstance)
+    generate_patient_report(patient_info,medication_list,str(ordonnances.first().id))
+    toDwonloadPath="doctorsPrescriptions/newPrescriptionPDF"+str(ordonnances.first().id)+".pdf"
+    fileName=str(ordonnances.first().id)+".pdf"
+    path = open(toDwonloadPath, 'r')
+    mime_type, _ = mimetypes.guess_type(toDwonloadPath)
+    response = HttpResponse(path, content_type=mime_type)
+    response['Content-Disposition'] = "attachment; filename=%s" % fileName
+    return response
+   

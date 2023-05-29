@@ -12,6 +12,11 @@ urlpatterns = [
     path('viewOrdonnancePending',views.visualiseWaitingOrdonnance,name="viewOrdonnancePending"),
     path('viewOrdonnancePendingInPharmacist',views.visualisePendingPharmacistOrdonnance,name="viewOrdonnancePendingInPharmacist"),
     path('acceptedOrdonnances',views.visualiseAcceptedOronnance,name="acceptedOrdonnances"),
+    path('seeWrittenOrdonnace',views.visualiseHistory,name="seeWrittenOrdonnace"),
+    path('download/<int:param>/',views.downlaoad,name="downloadSpecificOrdonnance"),
+
+
+     
 ]
 
 
