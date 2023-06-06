@@ -1,7 +1,7 @@
 .grid-container {
     margin-bottom: 50px;
     display: inline-grid;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(3, auto);
     padding: 10px;
     border-radius: 20px;
   }

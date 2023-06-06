@@ -20,6 +20,37 @@ from reportlab.pdfgen import canvas
 import mimetypes
 from django.http import FileResponse
 from django.http.response import HttpResponse
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+
+def sendMail(messageCustom,userMail):
+    try:
+    # Email configuration
+        sender_email = "badisbensassi8@gmail.com"
+        sender_password = 'vdbstlndtcvxtqjy'
+        recipient_email = userMail
+        subject = 'update about your prescription'
+        message = messageCustom
+
+        # Construct the email
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = recipient_email
+        msg['Subject'] = subject
+        msg.attach(MIMEText(message, 'plain'))
+
+        # Connect to the SMTP server
+        smtp_server = 'smtp.gmail.com'
+        smtp_port = 587  # Replace with the appropriate port number for your email provider
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()  # Enable TLS encryption
+            server.login(sender_email, sender_password)
+            server.sendmail(sender_email, recipient_email, msg.as_string())
+            print('Email sent successfully!')
+    except Exception as e:
+        print("something wrong with email sending")
 
 def generate_patient_report(patient_info, medication_list,uniqueId):
     toDwonloadPath="doctorsPrescriptions/newPrescriptionPDF"+uniqueId+".pdf"
@@ -95,7 +126,8 @@ def prepareOrdonnance(request):
                 
                 ligneToAdd=LigneOrdonnance(quantity=medicine['quantity'],Medicament=medicines,Ordonnance=newOrodonnance,remarks=medicine['Remarks'],qauntityPerDay=medicine['quantityPerDay'])
                 ligneToAdd.save()
-                 
+            emailMessage="you have received a prescripton from doctor "+request.user.first_name+" please connect to see it "
+            sendMail(emailMessage,user.email)
             messages.success(request,'ordannance sent successful')
              
 
@@ -155,7 +187,9 @@ def visualisePendingPharmacistOrdonnance(request):
             user = User.objects.get(username=request.user.username)
             UnboundOrdonnance=PharmacistPendingOrdoannance.objects.get(Pharmaciste=user,Ordonnance=acceptedOrdonnace)
             UnboundOrdonnance.delete()
-            messages.success(request,'ordonnance accepted') 
+            emailMessage="your medecine is ready at the pharmacy ! please connect to see more detail "
+            sendMail(emailMessage,acceptedOrdonnace.usernameDestination.email)
+            messages.success(request,'prescription accepted') 
 
         if request.POST['action'] == 'Deny':
             deniedOrodonnance=request.POST.get('ordonnanceDenied')
@@ -166,6 +200,9 @@ def visualisePendingPharmacistOrdonnance(request):
             user = User.objects.get(username=request.user.username)
             UnboundOrdonnance=PharmacistPendingOrdoannance.objects.get(Pharmaciste=user,Ordonnance=deniedOrodonnance)
             UnboundOrdonnance.delete()
+            emailMessage="the pharmacist cant provide you your medecine,you can request another pharmacist,  please connect to see more detail "
+            sendMail(emailMessage,deniedOrodonnance.usernameDestination.email)
+            messages.success(request,'prescription denied') 
 
 
     isPharmacist=request.user.groups.filter(name="Pharmacists").exists()

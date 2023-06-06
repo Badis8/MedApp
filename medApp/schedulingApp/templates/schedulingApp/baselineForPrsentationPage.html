@@ -4,7 +4,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Medd App</title>
+    <title>MiDweya</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
     <link href="{% static 'css/boot.css' %}" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'css/presentationForDoctor.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/presentationForPharmacist.css' %}">
@@ -13,15 +14,7 @@
   </head>
   <body>
     {% include 'schedulingApp/navbar.html' %}
-    {% if messages %}
-    {% for message in messages %}
-    <br> <br>
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-      {{message}}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div> 
-    {% endfor %}
-    {% endif %}
+ 
     
      
     {% block content %}
